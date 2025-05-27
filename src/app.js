@@ -1,6 +1,6 @@
 import express from "express";
 import conectaDb from "./config/dbConnect.js";
-import livro from "./models/Livro.js";
+import routes from "./routes/index.js";
 
 const conexao = await conectaDb();
 
@@ -13,18 +13,7 @@ conexao.once("open", () => {
 })
 
 const app = express();
-app.use(express.json());
-
-app.get("/", (req,res)=>{
-    res.status(200).send("Teste De Express")
-})
-
-
-app.post("/livros", (req,res)=>{
-    livros.push(req.body);
-    res.status(201).send("livros cadastrado com sucesso")
-
-})
+routes(app);
 
 app.put("/livros/:id", (req,res)=>{
     const index = BuscaLivro(req.params.id);
