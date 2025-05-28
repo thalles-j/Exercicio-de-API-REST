@@ -1,5 +1,5 @@
 import express from "express";
-import livros from "./livrosRoutes.js";
+import livros from "./livroRoutes.js";
 import autores from "./autoresRoutes.js";
 
 const routes = (app) => {
