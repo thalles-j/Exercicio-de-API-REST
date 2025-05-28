@@ -4,27 +4,15 @@ import routes from "./routes/index.js";
 
 const conexao = await conectaDb();
 
-conexao.on("erro", (erro) => {
-    console.error("erro de conexao", erro)
+conexao.on("error", (erro) => {
+  console.error("Erro ao conectar ao MongoDB:", erro);
 });
 
 conexao.once("open", () => {
-    console.log("conexao com o banco feita com sucesso!")
+  console.log("Conectado ao MongoDB com sucesso!");
 })
 
 const app = express();
 routes(app);
 
-app.put("/livros/:id", (req,res)=>{
-    const index = BuscaLivro(req.params.id);
-    livros[index].titulo = req.body.titulo;
-    res.status(200).json(livros);
-})
-
-app.delete("/ livros/:id", (req,res)=>{
-    const index = BuscaLivro(req.params.id);
-    livros.splice(index, 1);
-    res.status(200).send("livro excluido com sucesso!");
-})
-export default app
-
+export default app;

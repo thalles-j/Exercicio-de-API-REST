@@ -1,10 +1,10 @@
 import express from "express";
-import livro from "../routes/livroRoutes.js";
+import livros from "./livroRoutes.js";
 
 const routes = (app) => {
     app.route("/").get((req,res)=> res.status(200).send("Exercicio de API-REST"));
 
-    app.use(express.json(), livro)
+    app.use(express.json(),livros);
 };
 
 export default routes;
