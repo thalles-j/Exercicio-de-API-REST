@@ -41,13 +41,13 @@ Exercicio-de-API-REST/
    npm install
    ```
 3. Crie um arquivo .env na raiz do projeto com sua connection string do MongoDB Atlas:
-  ```
-  DB_CONNECTION_STRING={sua connection string sem as chaves.}
-  ```
+    ```
+    DB_CONNECTION_STRING={sua connection string sem as chaves.}
+    ```
 4. Inicie o servidor:
-  ```
-  npm run dev
-  ```
+    ```
+    npm run dev
+    ```
 
 🔍 Testando a API com Postman
 Abra o Postman
