@@ -1,16 +1,13 @@
 import NaoEncontrado from "../error/NaoEncontrado.js";
 import { livros } from "../models/index.js";
+import RequisicaoIncorreta from "../error/RequisicaoIncorreta.js";
 
 
 class LivroController {
 
   static listarLivros = async (req, res, next) => {
     try {
-      const livrosResultado = await livros.find()
-        .populate("autor")
-        .exec();
-
-      res.status(200).json(livrosResultado);
+      const buscarLivros = livros.find();
     } catch (erro) {
       next(erro);
     }
@@ -81,24 +78,6 @@ class LivroController {
       next(erro);
     }
   };
-
-  static listarLivroPorFiltro = async (req, res, next) => {
-    try {
-      const {editora, titulo} = req.query;
-
-      const busca = {};
-
-      if (editora) busca.editora = editora;
-      if (titulo) busca.titulo = titulo;
-      
-      const livrosResultado = await livros.find(busca);
-
-      res.status(200).send(livrosResultado);
-    } catch (erro) {
-      next(erro);
-    }
-  };
-
   static async listarLivrosPorPreco (req, res) {
    try{
     const livrosResultado = await livro.find().sort({preco:1});
@@ -108,6 +87,48 @@ class LivroController {
     next(erro);
    } 
   }
+    static listarLivroPorFiltro = async (req, res, next) => {
+    try {
+      const busca = await processaBusca(req.query);
+
+      if (busca !== null) {
+        const livrosResultado = livros
+          .find(busca)
+          .populate("autor");
+
+        req.resultado = livrosResultado
+
+        next();
+      } else {
+        res.status(200).send([]);
+      }
+    } catch (erro) {
+      next(erro);
+    }
+  }
+   static async processaBusca(parametros){
+  const {editora, titulo, minPaginas, maxPaginas, nomeAutor} = parametros;
+
+  const busca = {};
+
+  if(editora) busca.editora = editora
+  if(titulo) busca.titulo = {$regex: titulo, $options: "i"};
+
+  if( minPaginas || maxPaginas ) busca.paginas = {};
+
+  // gte = Greater Than or Equal = Maior ou igual que
+  if (minPaginas) busca.numeroPaginas.$gte = minPaginas;
+  // lte = Less Than or Equal = Menor ou igual que
+  if (maxPaginas) busca.numeroPaginas.$lte = maxPaginas;
+
+  if(nomeAutor) {
+    const autor = await autores.findOne({nome: nomeAutor})
+
+    const autorId = autor._id;
+    busca.autor = autorId
+  }
+  return busca
+}    
 };
 
 export default LivroController;
